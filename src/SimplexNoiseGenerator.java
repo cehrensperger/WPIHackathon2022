@@ -5,7 +5,7 @@
  * KdotJPG
  */
 
-public class PerlinNoiseGenerator {
+public class SimplexNoiseGenerator {
 
 	private static final double STRETCH_CONSTANT_3D = -1.0 / 6;
 	private static final double SQUISH_CONSTANT_3D = 1.0 / 3;
@@ -13,11 +13,11 @@ public class PerlinNoiseGenerator {
 	private short[] perm;
 	private short[] permGradIndex3D;
 	
-	public PerlinNoiseGenerator() {
+	public SimplexNoiseGenerator() {
 		this(perm_default);
 	}
 	
-	public PerlinNoiseGenerator(short[] perm) {
+	public SimplexNoiseGenerator(short[] perm) {
 		this.perm = perm;
 		permGradIndex3D = new short[256];
 		for (int i = 0; i < 256; i++) {
@@ -28,7 +28,7 @@ public class PerlinNoiseGenerator {
 	//Initializes the class using a permutation array generated from a 64-bit seed.
 	//Generates a proper permutation (i.e. doesn't merely perform N successive pair swaps on a base array)
 	//Uses java.util.Random
-	public PerlinNoiseGenerator(long seed) {
+	public SimplexNoiseGenerator(long seed) {
 		perm = new short[256];
 		permGradIndex3D = new short[256];
 		short[] source = new short[256];

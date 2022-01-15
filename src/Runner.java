@@ -1,10 +1,8 @@
 import java.util.Random;
-import java.util.random.RandomGenerator;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
@@ -13,19 +11,24 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;  
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;  
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class Runner extends Application{
-	static PerlinNoiseGenerator generator = new PerlinNoiseGenerator();
+	static SimplexNoiseGenerator generator = new SimplexNoiseGenerator();
 	double zVal = 70.0;
 	double zStep = 0.01;
 	double health = 100.0;
 	double mouseX;
 	double mouseY;
+	double score = 0;
 	ImageView imageView = new ImageView();
 	WritableImage wImg = new WritableImage(500, 500);
 	PixelWriter writer = wImg.getPixelWriter();
 	AnimationTimer animator = new Animator();
+	Text healthText = new Text();
+	Text scoreText = new Text();
 	public static void main(String[] args) {
 		launch(args);
 		   System.out.println(generator.noise(3.14,42,7));
@@ -33,18 +36,20 @@ public class Runner extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		animator.start();
-		System.out.println(zVal);
-		Button btn = new Button("test button");
 		StackPane root = new StackPane();
-		//root.getChildren().add(wImg);
 		imageView = new ImageView(wImg);
+		healthText.setTextOrigin(VPos.TOP);
+		healthText.setFont(new Font(20));
+		healthText.setText("health: " + health);
+		healthText.setFill(Color.RED);
 		root.getChildren().add(imageView);
+		root.getChildren().add(healthText);
 		
 		Scene scene = new Scene(root);
 		
 		
 		stage.setScene(scene);  
-        stage.setTitle("First JavaFX Application");  
+        stage.setTitle("WPI Hackathon Lava Lamp Survival Game");  
         stage.show();  
 		
         
@@ -56,9 +61,6 @@ public class Runner extends Application{
 				mouseX = e.getX();
 				mouseY = e.getY();
 				
-				//System.out.println(mouseX);
-				//System.out.println(mouseY);
-				
 			}
         };
         
@@ -67,7 +69,6 @@ public class Runner extends Application{
 
 			@Override
 			public void handle(MouseEvent e) {
-				//System.out.println("???");
 				animator.stop();
 			}
         };
@@ -77,15 +78,12 @@ public class Runner extends Application{
 
 			@Override
 			public void handle(MouseEvent e) {
-				//System.out.println("???");
-				animator.start();
+				if(health > 0) {
+					animator.start();
+				}
 			}
         };
         
-        //MouseEvent.Mouse
-        
-        
-        //MouseEvent.EX
         stage.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, mouseExited);
         stage.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, mouseEntered);
         stage.addEventHandler(MouseEvent.MOUSE_MOVED, mouseMoved);
@@ -95,7 +93,8 @@ public class Runner extends Application{
 
 		@Override
 		public void handle(long arg0) {
-			zVal -= zStep;
+			healthText.setText("health: " + health + "\n" + "score: " + score);
+			zVal += zStep;
 			System.out.println(health);
 			
 			if(!wImg.getPixelReader().getColor((int)mouseX, (int)mouseY).toString().equals("0x323232ff")) {	
@@ -106,7 +105,9 @@ public class Runner extends Application{
 			} 
 			
 			zStep += 0.0001;
-			
+			if(health > 0) {
+				score = (int)((zVal - 70) * 200);
+			}
 			double xVal = 3.14;
 			double yVal = 1.25;
 			double xStep = 0.01;
@@ -115,7 +116,6 @@ public class Runner extends Application{
 			Random random = new Random();
 			double rangeMin = 1.0;
 			double rangeMax = 70.0;
-			//for(int k = 0; k < 5; k ++) {
 			double z1 = rangeMin + (rangeMax - rangeMin) * random.nextDouble();
 			double z2 = rangeMin + (rangeMax - rangeMin) * random.nextDouble();
 			double z3 = rangeMin + (rangeMax - rangeMin) * random.nextDouble();
@@ -129,7 +129,6 @@ public class Runner extends Application{
 					int r = (int)(noiseVal*255);
 					int g = (int)(noiseVal2*255);
 					int b = (int)(noiseVal3*255);
-					//System.out.println(generator.noise(xVal, yVal, 7));
 					if(noiseVal < 0.5) {					
 						writer.setColor(j, i, Color.rgb(r, g, b, 1.0));
 					} else {

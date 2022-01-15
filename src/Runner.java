@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 
 public class Runner extends Application{
 	static PerlinNoiseGenerator generator = new PerlinNoiseGenerator();
-	double zVal = 7.0;
+	double zVal = 70.0;
 	ImageView imageView = new ImageView();
 	WritableImage wImg = new WritableImage(500, 500);
 	PixelWriter writer = wImg.getPixelWriter();
@@ -67,7 +67,7 @@ public class Runner extends Application{
 					
 					double noiseVal = ((generator.noise(xVal, yVal, zVal) + 1.0)/2.0);
 					double noiseVal2 = (generator.noise(xVal, zVal, zVal) + 1.0)/2.0;
-					double noiseVal3 = (generator.noise(zVal, zVal, zVal) + 1.0)/2.0;
+					double noiseVal3 = (generator.noise(zVal, yVal, zVal) + 1.0)/2.0;
 					
 					int r = (int)(noiseVal*255);
 					int g = (int)(noiseVal2*255);

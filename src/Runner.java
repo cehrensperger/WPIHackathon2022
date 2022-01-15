@@ -3,11 +3,14 @@ import java.util.random.RandomGenerator;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;  
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;  
@@ -17,16 +20,18 @@ public class Runner extends Application{
 	double zVal = 70.0;
 	double zStep = 0.01;
 	double health = 100.0;
+	double mouseX;
+	double mouseY;
 	ImageView imageView = new ImageView();
 	WritableImage wImg = new WritableImage(500, 500);
 	PixelWriter writer = wImg.getPixelWriter();
+	AnimationTimer animator = new Animator();
 	public static void main(String[] args) {
 		launch(args);
 		   System.out.println(generator.noise(3.14,42,7));
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
-		AnimationTimer animator = new Animator();
 		animator.start();
 		System.out.println(zVal);
 		Button btn = new Button("test button");
@@ -43,14 +48,63 @@ public class Runner extends Application{
         stage.show();  
 		
         
+        EventHandler<MouseEvent> mouseMoved = new EventHandler<MouseEvent>() {
+        	
+
+			@Override
+			public void handle(MouseEvent e) {
+				mouseX = e.getX();
+				mouseY = e.getY();
+				
+				//System.out.println(mouseX);
+				//System.out.println(mouseY);
+				
+			}
+        };
         
-		
+        EventHandler<MouseEvent> mouseExited = new EventHandler<MouseEvent>() {
+        	
+
+			@Override
+			public void handle(MouseEvent e) {
+				//System.out.println("???");
+				animator.stop();
+			}
+        };
+        
+        EventHandler<MouseEvent> mouseEntered = new EventHandler<MouseEvent>() {
+        	
+
+			@Override
+			public void handle(MouseEvent e) {
+				//System.out.println("???");
+				animator.start();
+			}
+        };
+        
+        //MouseEvent.Mouse
+        
+        
+        //MouseEvent.EX
+        stage.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, mouseExited);
+        stage.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, mouseEntered);
+        stage.addEventHandler(MouseEvent.MOUSE_MOVED, mouseMoved);
+
 	}
 	private class Animator extends AnimationTimer {
 
 		@Override
 		public void handle(long arg0) {
 			zVal -= zStep;
+			System.out.println(health);
+			
+			if(!wImg.getPixelReader().getColor((int)mouseX, (int)mouseY).toString().equals("0x323232ff")) {	
+				health -= 0.5;
+				if(health <= 0) {
+					animator.stop();
+				}
+			} 
+			
 			zStep += 0.0001;
 			
 			double xVal = 3.14;
@@ -69,8 +123,8 @@ public class Runner extends Application{
 				for(int j = 0; j < 500; j ++) {
 					
 					double noiseVal = ((generator.noise(xVal, yVal, zVal) + 1.0)/2.0);
-					double noiseVal2 = (generator.noise(xVal, yVal, zVal) + 1.0)/2.0;
-					double noiseVal3 = (generator.noise(xVal, yVal, zVal) + 1.0)/2.0;
+					double noiseVal2 = (generator.noise(xVal, zVal, zVal) + 1.0)/2.0;
+					double noiseVal3 = (generator.noise(zVal, yVal, zVal) + 1.0)/2.0;
 					
 					int r = (int)(noiseVal*255);
 					int g = (int)(noiseVal2*255);
@@ -88,9 +142,6 @@ public class Runner extends Application{
 				yVal += yStep;
 			}
 			
-			
-			//}
-			System.out.println(zVal);
 			
 		}
 		

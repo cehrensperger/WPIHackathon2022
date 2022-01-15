@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 public class Runner extends Application{
 	static PerlinNoiseGenerator generator = new PerlinNoiseGenerator();
 	double zVal = 70.0;
+	double zStep = 0.01;
+	double health = 100.0;
 	ImageView imageView = new ImageView();
 	WritableImage wImg = new WritableImage(500, 500);
 	PixelWriter writer = wImg.getPixelWriter();
@@ -48,7 +50,8 @@ public class Runner extends Application{
 
 		@Override
 		public void handle(long arg0) {
-			zVal -= 0.1;
+			zVal -= zStep;
+			zStep += 0.0001;
 			
 			double xVal = 3.14;
 			double yVal = 1.25;
@@ -66,18 +69,18 @@ public class Runner extends Application{
 				for(int j = 0; j < 500; j ++) {
 					
 					double noiseVal = ((generator.noise(xVal, yVal, zVal) + 1.0)/2.0);
-					double noiseVal2 = (generator.noise(xVal, zVal, zVal) + 1.0)/2.0;
-					double noiseVal3 = (generator.noise(zVal, yVal, zVal) + 1.0)/2.0;
+					double noiseVal2 = (generator.noise(xVal, yVal, zVal) + 1.0)/2.0;
+					double noiseVal3 = (generator.noise(xVal, yVal, zVal) + 1.0)/2.0;
 					
 					int r = (int)(noiseVal*255);
 					int g = (int)(noiseVal2*255);
 					int b = (int)(noiseVal3*255);
 					//System.out.println(generator.noise(xVal, yVal, 7));
-					//if(noiseVal < 0.5) {					
+					if(noiseVal < 0.5) {					
 						writer.setColor(j, i, Color.rgb(r, g, b, 1.0));
-					//} else {
-					//	writer.setColor(j, i, Color.rgb(50, 50, 50, 1));
-					//}
+					} else {
+						writer.setColor(j, i, Color.rgb(50, 50, 50, 1));
+					}
 					xVal += xStep;
 				}
 				

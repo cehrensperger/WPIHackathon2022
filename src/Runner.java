@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -18,7 +17,7 @@ import javafx.scene.text.Text;
 public class Runner extends Application{
 	static SimplexNoiseGenerator generator = new SimplexNoiseGenerator();
 	double zVal = 70.0;
-	double zStep = 0.01;
+	double zStep = 0.1;
 	double health = 100.0;
 	double mouseX;
 	double mouseY;
@@ -31,7 +30,6 @@ public class Runner extends Application{
 	Text scoreText = new Text();
 	public static void main(String[] args) {
 		launch(args);
-		   System.out.println(generator.noise(3.14,42,7));
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -39,8 +37,8 @@ public class Runner extends Application{
 		StackPane root = new StackPane();
 		imageView = new ImageView(wImg);
 		healthText.setTextOrigin(VPos.TOP);
-		healthText.setFont(new Font(20));
-		healthText.setText("health: " + health);
+		healthText.setFont(new Font(30));
+		healthText.setText("Health: " + health);
 		healthText.setFill(Color.RED);
 		root.getChildren().add(imageView);
 		root.getChildren().add(healthText);
@@ -93,9 +91,8 @@ public class Runner extends Application{
 
 		@Override
 		public void handle(long arg0) {
-			healthText.setText("health: " + health + "\n" + "score: " + score);
+			healthText.setText("Health: " + health + "\n" + "Score: " + score);
 			zVal += zStep;
-			System.out.println(health);
 			
 			if(!wImg.getPixelReader().getColor((int)mouseX, (int)mouseY).toString().equals("0x323232ff")) {	
 				health -= 0.5;
